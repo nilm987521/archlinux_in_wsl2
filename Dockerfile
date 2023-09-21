@@ -13,7 +13,7 @@ Server = https://pkg.wslutiliti.es/arch/" | tee -a /etc/pacman.conf
 RUN pacman -Syu --noconfirm && pacman -S --noconfirm zsh exa direnv vim man-db man-pages podman podman-docker podman-compose fcitx5 fcitx5-chewing fcitx5-gtk fcitx5-config-qt gvim glibc tmux sudo jdk8-openjdk jdk17-openjdk nodejs-lts-hydrogen npm btop git zoxide openssh bat net-tools openbsd-netcat maven noto-fonts-cjk wqy-microhei make gcc wslu
 RUN echo 'en_US.UTF-8 UTF-8' | tee -a /etc/locale.gen && locale-gen
 RUN echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee -a /etc/sudoers
-RUN echo "GTK_IM_MODULE=fcitx\n\
+RUN echo -e "GTK_IM_MODULE=fcitx\n\
 QT_IM_MODULE=fcitx\n\
 XMODIFIERS=@im=fcitx\n\
 SDL_IM_MODULE=fcitx\n\
@@ -23,6 +23,8 @@ GLFW_IM_MODULE=ibus" | tee -a /etc/environment
 RUN touch /etc/containers/nodocker
 # 比較快的系統資訊顯示
 RUN cd ~ && git clone https://github.com/alba4k/albafetch && cd albafetch && make && make install
+RUN touch /etc/machine-id
+RUN rm -f /.dockerenv
 
 ARG USER="daniel"
 # 設定WSL相關參數
