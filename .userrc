@@ -1,0 +1,42 @@
+#!/bin/zsh
+eval "$(zoxide init zsh)"
+eval "$(direnv hook zsh)"
+eval "$(dbus-launch --sh-syntax)"
+
+alias ls="exa"
+alias cat="bat -p"
+alias vi="vim"
+alias open="wslview"
+
+export EDITOR="vim"
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
+export TZ="Asia/Taipei"
+export LC_ALL="en_US.UTF-8"
+export MAVEN_CONFIG="$HOME/.m2"
+export THROWERROR="true"
+export TZ="Asia/Taipei"
+export CLOUDSDK_PYTHON_SITEPACKAGES=1
+
+export PATH="$HOME/opt/apache-jmeter-5.5/bin:$PATH"
+export PATH="$HOME/opt/scenebuilder/bin:$PATH"
+export PATH="$HOME/opt/sublime_merge:$PATH"
+
+if type tmux > /dev/null && test -z $VSCODE_INJECTION
+then
+    if test -z $TMUX  && test -z $TERMINAL_CONTEXT
+    then
+        tmux -2 attach || tmux -u -2 new-session 
+    elif test $(env | grep TMUX_PANE | awk -F'=%' '{print $2}') -eq 0
+    then
+        albafetch
+    fi
+fi
+
+restart_fcitx() {
+    kill -15 $(ps aux | grep -v grep | grep fcitx | awk '{print $2}') 1>/dev/null 2>&1
+    fcitx5 --disable=wayland -d  --verbose '*'=0
+}
+
+# gcloud
+if [ -f "$HOME/opt/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/opt/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "$HOME/opt/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/opt/google-cloud-sdk/completion.zsh.inc"; fi
