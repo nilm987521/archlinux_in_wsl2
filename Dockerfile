@@ -3,6 +3,7 @@ FROM archlinux
 # 開啟下載套件的man-page
 RUN sed -i 's/NoProgressBar//' /etc/pacman.conf
 RUN sed -i '100d' /etc/pacman.conf
+RUN sed -i 's/#Color/Color/' /etc/pacman.conf
 
 # 設定wslu
 RUN curl -O https://pkg.wslutiliti.es/public.key && pacman-key --add public.key && rm public.key
