@@ -2,7 +2,7 @@ FROM archlinux
 
 # 開啟下載套件的man-page
 RUN sed -i 's/NoProgressBar//' /etc/pacman.conf
-RUN sed '100d' /etc/pacman.conf | tee /etc/pacman.conf
+RUN sed -i '100d' /etc/pacman.conf
 
 # 設定wslu
 RUN curl -O https://pkg.wslutiliti.es/public.key && pacman-key --add public.key && rm public.key
@@ -10,23 +10,23 @@ RUN pacman-key --init && pacman-key --lsign-key 2D4C887EB08424F157151C493DD50AA7
 RUN echo -e "\
 [wslutilities]\n\
 Server = https://pkg.wslutiliti.es/arch/" | tee -a /etc/pacman.conf
-RUN pacman -Syu --noconfirm && pacman -S --noconfirm zsh exa direnv vim man-db man-pages podman podman-docker podman-compose fcitx5 fcitx5-chewing fcitx5-gtk fcitx5-config-qt gvim glibc tmux sudo jdk8-openjdk jdk17-openjdk nodejs-lts-hydrogen npm btop git zoxide openssh bat net-tools openbsd-netcat maven noto-fonts-cjk wqy-microhei make gcc wslu
+RUN pacman -Syu --noconfirm && pacman -S --noconfirm zsh exa direnv vim man-db man-pages docker docker-buildx docker-compose fcitx5 fcitx5-chewing fcitx5-gtk fcitx5-config-qt glibc tmux sudo jdk8-openjdk jdk17-openjdk nodejs-lts-hydrogen npm btop git zoxide openssh bat net-tools openbsd-netcat maven noto-fonts-cjk wqy-microhei make gcc wslu neovim
+RUN systemctl enable docker docker.socket
 RUN echo 'en_US.UTF-8 UTF-8' | tee -a /etc/locale.gen && locale-gen
 RUN echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee -a /etc/sudoers
 RUN echo -e "GTK_IM_MODULE=fcitx\n\
 QT_IM_MODULE=fcitx\n\
 XMODIFIERS=@im=fcitx\n\
 SDL_IM_MODULE=fcitx\n\
-GLFW_IM_MODULE=ibus" | tee -a /etc/environment
+GLFW_IM_MODULE=ibus" | tee -a ~/.xprofile
 
-# 關閉podman的docker模擬提醒
-RUN touch /etc/containers/nodocker
 # 比較快的系統資訊顯示
 RUN cd ~ && git clone https://github.com/alba4k/albafetch && cd albafetch && make && make install
 RUN touch /etc/machine-id
 RUN rm -f /.dockerenv
 
 ARG USER="daniel"
+RUN usermod -aG docker $USER
 # 設定WSL相關參數
 RUN echo -e "\
 [boot]\n\
@@ -50,6 +50,7 @@ RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 RUN sed -i 's/robbyrussell/itchy/' ~/.zshrc
+RUN sed -i '73s/git/git mvn docker sudo systemd zoxide tmux/' ~/.zshrc
 RUN echo 'source $HOME/.userrc' | tee -a ~/.zshrc
 COPY --chown=$USER:$USER .userrc /home/$USER/.userrc
 COPY --chown=$USER:$USER .vimrc /home/$USER/.vimrc

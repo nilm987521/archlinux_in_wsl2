@@ -4,9 +4,12 @@ eval "$(direnv hook zsh)"
 eval "$(dbus-launch --sh-syntax)"
 
 alias ls="exa"
+alias ltr="ls -l --sort newest"
 alias cat="bat -p"
 alias vi="vim"
 alias open="wslview"
+alias powershell="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+alias vihosts='powershell sudo wsl vim /mnt/c/Windows/System32/drivers/etc/hosts && powershell ipconfig /flushdns'
 
 export EDITOR="vim"
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
@@ -20,6 +23,7 @@ export CLOUDSDK_PYTHON_SITEPACKAGES=1
 export PATH="$HOME/opt/apache-jmeter-5.5/bin:$PATH"
 export PATH="$HOME/opt/scenebuilder/bin:$PATH"
 export PATH="$HOME/opt/sublime_merge:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 if type tmux > /dev/null && test -z $VSCODE_INJECTION
 then
@@ -34,8 +38,13 @@ fi
 
 restart_fcitx() {
     kill -15 $(ps aux | grep -v grep | grep fcitx | awk '{print $2}') 1>/dev/null 2>&1
-    fcitx5 --disable=wayland -d  --verbose '*'=0
+    dbus-launch fcitx5 --disable=wayland -d  --verbose '*'=0
 }
+
+if test -z "$(ps aux | grep -v grep | grep fcitx)"
+then
+    restart_fcitx
+fi
 
 # gcloud
 if [ -f "$HOME/opt/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/opt/google-cloud-sdk/path.zsh.inc"; fi
