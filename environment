@@ -1,0 +1,7 @@
+EDITOR=/usr/bin/nvim
+XMODIFIERS=@im=fcitx5
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+WINIT_UNIX_BACKEND=x11
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=ibus

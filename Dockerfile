@@ -1,5 +1,7 @@
 FROM archlinux
 
+COPY --chown=root:root environment /etc/environment
+
 # 開啟下載套件的man-page
 RUN sed -i 's/NoProgressBar//' /etc/pacman.conf
 RUN sed -i '100d' /etc/pacman.conf
@@ -15,11 +17,6 @@ RUN pacman -Syu --noconfirm && pacman -S --noconfirm zsh exa direnv vim man-db m
 RUN systemctl enable docker docker.socket
 RUN echo 'en_US.UTF-8 UTF-8' | tee -a /etc/locale.gen && locale-gen
 RUN echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee -a /etc/sudoers
-RUN echo -e "GTK_IM_MODULE=fcitx\n\
-QT_IM_MODULE=fcitx\n\
-XMODIFIERS=@im=fcitx\n\
-SDL_IM_MODULE=fcitx\n\
-GLFW_IM_MODULE=ibus" | tee -a ~/.xprofile
 
 # 比較快的系統資訊顯示
 RUN cd ~ && git clone https://github.com/alba4k/albafetch && cd albafetch && make && make install
